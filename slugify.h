@@ -19,7 +19,7 @@ char* slugify_ascii(const char* string) {
     }
 
     if (isupper(c)) {
-      result[j++] = c + 32;
+      result[j++] = tolower(c);
       continue;
     }
 

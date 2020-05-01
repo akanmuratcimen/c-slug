@@ -2,5 +2,5 @@
 #include <stdio.h>
 
 int main() {
-  printf("%s\n", slugify_ascii("   s  lug ify   "));
+  printf("%s\n", slugify_ascii("   s  Lug ~ ify   "));
 }
