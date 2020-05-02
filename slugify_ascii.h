@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char replacement_char = '-';
-
 char* slugify_ascii(const char* string) {
+  const char replacement_char = '-';
+  
   size_t len = strlen(string), j = 0;
   char* result = (char*)malloc(len + 1);
 
