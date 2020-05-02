@@ -1,5 +1,5 @@
 CC = gcc 
-CFLAGS = -W -Wall -Werror -I -std=c11 -O3 -pedantic -lm
+CFLAGS = -W -Wall -Werror -I -std=c11 -g -pedantic -lm
 SRCFILES = main.c
 OUTPUT = bin/main
 

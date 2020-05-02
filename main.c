@@ -4,5 +4,7 @@
 #include "slugify_unicode.h"
 
 int main() {
-  printf("%s\n", slugify_unicode(L"I ♥ UNICODE"));
+  char* str = slugify_unicode(L"I ♥ UNICODE");
+  printf("%s\n", str);
+  free(str);
 }

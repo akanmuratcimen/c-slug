@@ -1,15 +1,16 @@
 #include <locale.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
 
-typedef struct unicode_map_t {
-  wchar_t unicode;
-  char* ascii;
-} unicode_map_t;
+typedef struct unicode_char_map_t {
+  wchar_t unicode_char;
+  char* ascii_char;
+} unicode_char_map_t;
 
 // clang-format off
-const unicode_map_t unicode_map[] = { 
+const unicode_char_map_t unicode_char_map[] = { 
   { L'À', "a" },
   { L'Á', "a" },
   { L'Â', "a" },
@@ -187,7 +188,6 @@ const unicode_map_t unicode_map[] = {
   { L'щ', "sh" },
   { L'ъ', "u" },
   { L'ы', "y" },
-  { L'ь', "" },
   { L'э', "e" },
   { L'ю', "yu" },
   { L'я', "ya" },
@@ -220,7 +220,6 @@ const unicode_map_t unicode_map[] = {
   { L'Щ', "sh" },
   { L'Ъ', "u" },
   { L'Ы', "y" },
-  { L'Ь', "" },
   { L'Э', "e" },
   { L'Ю', "yu" },
   { L'Я', "ya" },
@@ -319,22 +318,18 @@ const unicode_map_t unicode_map[] = {
   { L'¤', "currency" },
   { L'฿', "baht" },
   { L'$', "dollar" },
-  { L'©', "(c)" },
+  { L'©', "c" },
   { L'œ', "oe" },
-  { L'Œ', "OE" },
+  { L'Œ', "oe" },
   { L'∑', "sum" },
-  { L'®', "(r)" },
-  { L'†', "+" },
-  { L'“', "\"" },
+  { L'®', "r" },
   { L'∂', "d" },
   { L'ƒ', "f" },
   { L'™', "tm" },
   { L'℠', "sm" },
-  { L'…', "..." },
   { L'˚', "o" },
   { L'º', "o" },
   { L'ª', "a" },
-  { L'•', "*" },
   { L'∆', "delta" },
   { L'∞', "infinity" },
   { L'♥', "love" },
@@ -346,77 +341,21 @@ const unicode_map_t unicode_map[] = {
 // clang-format on
 
 typedef struct map_entry_t {
-  wchar_t unicode;
-  char* ascii;
+  wchar_t unicode_char;
+  char* ascii_char;
   struct map_entry_t* next;
 } map_entry_t;
 
-map_entry_t** entries = NULL;
-size_t map_capacity = 337;
+size_t map_capacity = 512;
 
-map_entry_t* map_create_entry(const wchar_t unicode, char* ascii) {
-  map_entry_t* entry = (map_entry_t*)malloc(sizeof(map_entry_t));
-
-  entry->unicode = unicode;
-  entry->ascii = ascii;
-  entry->next = NULL;
-
-  return entry;
-}
-
-void map_set(const wchar_t unicode, char* ascii) {
-  const unsigned int slot = unicode % map_capacity;
-  map_entry_t* entry = entries[slot];
-
-  if (entry == NULL) {
-    entries[slot] = map_create_entry(unicode, ascii);
-
-    return;
-  }
-
-  map_entry_t* prev = NULL;
-
-  while (entry) {
-    prev = entry;
-    entry = prev->next;
-  }
-
-  if (prev == NULL) {
-    return;
-  }
-
-  prev->next = map_create_entry(unicode, ascii);
-}
-
-void initialize_map() {
-  entries = malloc(sizeof(map_entry_t) * map_capacity);
-
-  for (size_t i = 0; i < map_capacity; ++i) {
-    entries[i] = NULL;
-  }
-
-  for (size_t i = 0; i < sizeof(unicode_map) / sizeof(unicode_map_t); ++i) {
-    map_set(unicode_map[i].unicode, unicode_map[i].ascii);
-  }
-}
-
-inline static map_entry_t* map_get_entry(const wchar_t unicode) {
-  map_entry_t* entry = entries[unicode % map_capacity];
-
-  while (entry) {
-    if (entry->unicode == unicode) {
-      return entry;
-    }
-
-    entry = entry->next;
-  }
-
-  return NULL;
-}
+static map_entry_t** create_map();
+static void map_set(
+  map_entry_t** map, const wchar_t unicode_char, char* ascii_char);
+static map_entry_t* map_get(map_entry_t** map, const wchar_t unicode_char);
+void map_destroy(map_entry_t** map);
 
 char* slugify_unicode(const wchar_t* string) {
-  initialize_map();
-
+  map_entry_t** map = create_map();
   const char replacement_char = '-';
 
   size_t len = wcslen(string), j = 0, capacity = len + 1;
@@ -446,10 +385,10 @@ char* slugify_unicode(const wchar_t* string) {
       }
     }
 
-    map_entry_t* map_entry = map_get_entry(c);
+    map_entry_t* map_entry = map_get(map, c);
 
     if (map_entry) {
-      char* r = map_entry->ascii;
+      char* r = map_entry->ascii_char;
 
       while (*r != '\0') {
         if (j >= capacity) {
@@ -471,5 +410,86 @@ char* slugify_unicode(const wchar_t* string) {
 
   result[j] = '\0';
 
+  map_destroy(map);
+
   return result;
+}
+
+static void map_set(
+  map_entry_t** map, const wchar_t unicode_char, char* ascii_char) {
+  const size_t slot = unicode_char % map_capacity;
+
+  map_entry_t* current_entry = map[slot];
+  map_entry_t* new_entry = (map_entry_t*)malloc(sizeof(map_entry_t));
+
+  new_entry->unicode_char = unicode_char;
+  new_entry->ascii_char = ascii_char;
+  new_entry->next = NULL;
+
+  if (current_entry == NULL) {
+    map[slot] = new_entry;
+
+    return;
+  }
+
+  map_entry_t* prev = NULL;
+
+  while (current_entry) {
+    prev = current_entry;
+    current_entry = prev->next;
+  }
+
+  prev->next = new_entry;
+}
+
+static map_entry_t** create_map() {
+  map_entry_t** map = malloc(sizeof(map_entry_t) * map_capacity);
+
+  for (size_t i = 0; i < map_capacity; ++i) {
+    map[i] = NULL;
+  }
+
+  size_t char_map_count = sizeof(unicode_char_map) / sizeof(unicode_char_map_t);
+
+  unicode_char_map_t ucm;
+  for (size_t i = 0; i < char_map_count; ++i) {
+    ucm = unicode_char_map[i];
+    map_set(map, ucm.unicode_char, ucm.ascii_char);
+  }
+
+  return map;
+}
+
+static map_entry_t* map_get(map_entry_t** map, const wchar_t unicode_char) {
+  map_entry_t* entry = map[unicode_char % map_capacity];
+
+  while (entry) {
+    if (entry->unicode_char == unicode_char) {
+      return entry;
+    }
+
+    entry = entry->next;
+  }
+
+  return NULL;
+}
+
+void map_destroy(map_entry_t** map) {
+  if (map == NULL) {
+    return;
+  }
+
+  for (unsigned int i = 0; i < map_capacity; ++i) {
+    map_entry_t* entry = map[i];
+
+    while (entry) {
+      map_entry_t* next = entry->next;
+
+      free(entry);
+
+      entry = next;
+    }
+  }
+
+  free(map);
 }
