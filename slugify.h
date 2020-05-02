@@ -5,10 +5,10 @@
 const char replacement_char = '-';
 
 char* slugify_ascii(const char* string) {
-  size_t len = strlen(string);
+  size_t len = strlen(string), j = 0;
   char* result = (char*)malloc(len + 1);
+
   char c;
-  size_t j = 0;
 
   for (size_t i = 0; i < len; ++i) {
     c = string[i];
@@ -32,11 +32,11 @@ char* slugify_ascii(const char* string) {
   }
 
   if (result[j - 1] == replacement_char) {
-    result[j--] = '\0';
+    j--;
   }
 
   if (len != j) {
-    result = realloc(result, j + 1);
+    result = (char*)realloc(result, j + 1);
   }
 
   result[j] = '\0';
