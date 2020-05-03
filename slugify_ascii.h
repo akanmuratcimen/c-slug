@@ -1,6 +1,10 @@
 #ifndef SLUGIFY_ASCII_H
 #define SLUGIFY_ASCII_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,6 +50,10 @@ char* slugify_ascii(const char* string) {
 
   return result;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif 
 
