@@ -9,7 +9,6 @@ typedef struct unicode_char_map_t {
   char* ascii_char;
 } unicode_char_map_t;
 
-// clang-format off
 const unicode_char_map_t unicode_char_map[] = { 
   { L'À', "a" },
   { L'Á', "a" },
@@ -338,7 +337,6 @@ const unicode_char_map_t unicode_char_map[] = {
   { L'<', "less" },
   { L'>', "greater" } 
 };
-// clang-format on
 
 typedef struct map_entry_t {
   wchar_t unicode_char;
@@ -349,9 +347,13 @@ typedef struct map_entry_t {
 size_t map_capacity = 512;
 
 static map_entry_t** create_map();
-static void map_set(
-  map_entry_t** map, const wchar_t unicode_char, char* ascii_char);
-static map_entry_t* map_get(map_entry_t** map, const wchar_t unicode_char);
+
+static void map_set(map_entry_t** map, 
+    const wchar_t unicode_char, char* ascii_char);
+
+static map_entry_t* map_get(map_entry_t** map, 
+    const wchar_t unicode_char);
+
 void map_destroy(map_entry_t** map);
 
 char* slugify_unicode(const wchar_t* string) {
@@ -361,12 +363,14 @@ char* slugify_unicode(const wchar_t* string) {
   size_t len = wcslen(string), j = 0, capacity = len + 1;
   char* result = (char*)malloc(capacity);
 
-  setlocale(LC_CTYPE, "UTF-8");
-
   wchar_t c;
 
   for (size_t i = 0; i < len; ++i) {
     c = string[i];
+
+    if (j >= capacity) {
+      result = (char*)realloc(result, capacity += 20);
+    }
 
     if (iswdigit(c) || iswlower(c)) {
       result[j++] = c;
@@ -391,10 +395,6 @@ char* slugify_unicode(const wchar_t* string) {
       char* r = map_entry->ascii_char;
 
       while (*r != '\0') {
-        if (j >= capacity) {
-          result = (char*)realloc(result, capacity += 20);
-        }
-
         result[j++] = *(r++);
       }
     }
@@ -415,8 +415,8 @@ char* slugify_unicode(const wchar_t* string) {
   return result;
 }
 
-static void map_set(
-  map_entry_t** map, const wchar_t unicode_char, char* ascii_char) {
+static void map_set(map_entry_t** map, 
+    const wchar_t unicode_char, char* ascii_char) {
   const size_t slot = unicode_char % map_capacity;
 
   map_entry_t* current_entry = map[slot];
@@ -460,7 +460,8 @@ static map_entry_t** create_map() {
   return map;
 }
 
-static map_entry_t* map_get(map_entry_t** map, const wchar_t unicode_char) {
+static map_entry_t* map_get(map_entry_t** map, 
+    const wchar_t unicode_char) {
   map_entry_t* entry = map[unicode_char % map_capacity];
 
   while (entry) {
