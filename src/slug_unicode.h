@@ -363,7 +363,7 @@ static map_entry_t* map_get(map_entry_t** map,
 
 void map_destroy(map_entry_t** map);
 
-char* slugify_unicode(const wchar_t* string) {
+char* slug_unicode(const wchar_t* string) {
   map_entry_t** map = create_map();
   const char replacement_char = '-';
 
@@ -389,7 +389,8 @@ char* slugify_unicode(const wchar_t* string) {
       continue;
     }
 
-    if (i != 0 && i != len - 1 && j != 0 && iswspace(c)) {
+    if (i != 0 && i != len - 1 && j != 0 && 
+        (iswspace(c) || c == replacement_char)) {
       if (result[j - 1] != replacement_char) {
         result[j++] = replacement_char;
         continue;

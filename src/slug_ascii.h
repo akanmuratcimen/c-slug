@@ -9,7 +9,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-char* slugify_ascii(const char* string) {
+char* slug_ascii(const char* string) {
   const char replacement_char = '-';
   
   size_t len = strlen(string), j = 0;
@@ -30,7 +30,8 @@ char* slugify_ascii(const char* string) {
       continue;
     }
 
-    if (i != 0 && i != len - 1 && j != 0 && isspace(c)) {
+    if (i != 0 && i != len - 1 && j != 0 && 
+        (isspace(c) || c == replacement_char)) {
       if (result[j - 1] != replacement_char) {
         result[j++] = replacement_char;
         continue;
