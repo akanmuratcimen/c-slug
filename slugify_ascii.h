@@ -1,3 +1,6 @@
+#ifndef SLUGIFY_ASCII_H
+#define SLUGIFY_ASCII_H
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,3 +46,6 @@ char* slugify_ascii(const char* string) {
 
   return result;
 }
+
+#endif 
+

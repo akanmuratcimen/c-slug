@@ -1,3 +1,6 @@
+#ifndef SLUGIFY_UNICODE_H
+#define SLUGIFY_UNICODE_H
+
 #include <locale.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -494,3 +497,6 @@ void map_destroy(map_entry_t** map) {
 
   free(map);
 }
+
+#endif 
+
