@@ -41,3 +41,4 @@ int main(void) {
 
   return nf ? EXIT_FAILURE : EXIT_SUCCESS;
 }
+

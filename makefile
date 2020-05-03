@@ -11,8 +11,13 @@ slug_ascii_tests: test/slug_ascii_tests.c
 	@$(CC) test/slug_ascii_tests.c -I ./src -o bin/slug_ascii_tests \
 		-lcheck -lpthread -lm -lrt -lsubunit
 
-test: slug_ascii_tests
+slug_unicode_tests: test/slug_unicode_tests.c
+	@$(CC) test/slug_unicode_tests.c -I ./src -o bin/slug_unicode_tests \
+		-lcheck -lpthread -lm -lrt -lsubunit
+
+test: slug_ascii_tests slug_unicode_tests
 	@./bin/slug_ascii_tests
+	@./bin/slug_unicode_tests
 	
 clean:
 	@rm -rf bin
