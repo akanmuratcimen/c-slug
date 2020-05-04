@@ -7,11 +7,11 @@ COV_LIBS = -lgcov -coverage
 SRCFILES = main.c
 OUTPUT = bin/main
 
+main: create_bin_dir
+	@$(CC) $(SRCFILES) -O0 -o $(OUTPUT) $(CFLAGS)
+
 create_bin_dir:
 	@mkdir -p bin
-
-main: create_bin_dir
-	@$(CC) $(SRCFILES) -o $(OUTPUT) -O0 $(CFLAGS)
 
 slug_ascii_tests: create_bin_dir
 	@$(CC) test/slug_ascii_tests.c \
@@ -44,3 +44,4 @@ run:
 
 valgrind:
 	valgrind --track-origins=yes --leak-check=full -s ./$(OUTPUT)
+
