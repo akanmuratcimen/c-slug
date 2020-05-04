@@ -5,10 +5,10 @@ PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
 TEST_LIBS = -lcheck -lpthread -lm -lrt -lsubunit
 COV_LIBS = -lgcov -coverage
 SRCFILES = main.c
-OUTPUT = bin/main
+OUTPUT = c-slug 
 
-main: create_bin_dir
-	@$(CC) $(SRCFILES) -O0 -o $(OUTPUT) $(CFLAGS)
+main:
+	@$(CC) $(SRCFILES) -O3 -o $(OUTPUT) $(CFLAGS)
 
 create_bin_dir:
 	@mkdir -p bin
@@ -37,10 +37,7 @@ coverage: clean_coverage | test
 .PHONY: clean
 
 clean: clean_coverage
-	@rm -rf bin
-
-run:
-	@./$(OUTPUT)
+	@rm -rf bin $(OUTPUT)
 
 valgrind:
 	valgrind --track-origins=yes --leak-check=full -s ./$(OUTPUT)

@@ -2,3 +2,4 @@ bin/
 *.html
 *.gcda
 *.gcno
+c-slug
