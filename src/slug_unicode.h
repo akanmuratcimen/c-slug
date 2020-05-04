@@ -354,13 +354,9 @@ typedef struct map_entry_t {
 size_t map_capacity = 512;
 
 static map_entry_t** create_map();
-
 static void map_set(map_entry_t** map, 
     const wchar_t unicode_char, char* ascii_char);
-
-static map_entry_t* map_get(map_entry_t** map, 
-    const wchar_t unicode_char);
-
+static map_entry_t* map_get(map_entry_t** map,const wchar_t unicode_char);
 void map_destroy(map_entry_t** map);
 
 char* slug_unicode(const wchar_t* string) {
@@ -457,7 +453,9 @@ static map_entry_t** create_map() {
     map[i] = NULL;
   }
 
-  size_t char_map_count = sizeof(unicode_char_map) / sizeof(unicode_char_map_t);
+  size_t char_map_count = 
+    sizeof(unicode_char_map) / 
+    sizeof(unicode_char_map_t);
 
   unicode_char_map_t ucm;
   for (size_t i = 0; i < char_map_count; ++i) {
@@ -468,8 +466,7 @@ static map_entry_t** create_map() {
   return map;
 }
 
-static map_entry_t* map_get(map_entry_t** map, 
-    const wchar_t unicode_char) {
+static map_entry_t* map_get(map_entry_t** map, const wchar_t unicode_char) {
   map_entry_t* entry = map[unicode_char % map_capacity];
 
   while (entry) {
@@ -484,10 +481,6 @@ static map_entry_t* map_get(map_entry_t** map,
 }
 
 void map_destroy(map_entry_t** map) {
-  if (map == NULL) {
-    return;
-  }
-
   for (unsigned int i = 0; i < map_capacity; ++i) {
     map_entry_t* entry = map[i];
 
