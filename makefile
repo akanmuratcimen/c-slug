@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -W -Wall -Werror -I src -std=c11 -g -pedantic -lm
+CFLAGS = -W -Wall -Werror -I src -std=c11 -pedantic -lm
 TESTFLAGS = -W -Wall -Werror -I src -std=c11
 PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
 TEST_LIBS = -lcheck -lpthread -lm -lrt -lsubunit
