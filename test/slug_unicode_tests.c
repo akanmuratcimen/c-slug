@@ -31,6 +31,20 @@ START_TEST(ignores_trailing_replacement_chars) {
   ck_assert_str_eq(slug_unicode(L"foo-bar-baz --"), "foo-bar-baz");
 } END_TEST
 
+START_TEST(result_should_be_empty) {
+  ck_assert_str_eq(slug_unicode(L""), "");
+  ck_assert_str_eq(slug_unicode(L" "), "");
+  ck_assert_str_eq(slug_unicode(L"-"), "");
+  ck_assert_str_eq(slug_unicode(L" - "), "");
+  ck_assert_str_eq(slug_unicode(L"- -"), "");
+  ck_assert_str_eq(slug_unicode(L"*"), "");
+  ck_assert_str_eq(slug_unicode(L" * "), "");
+  ck_assert_str_eq(slug_unicode(L"* *"), "");
+  ck_assert_str_eq(slug_unicode(L"***"), "");
+  ck_assert_str_eq(slug_unicode(L"-*-"), "");
+  ck_assert_str_eq(slug_unicode(L"*-*"), "");
+} END_TEST
+
 int main(void) {
   Suite *s = suite_create("unicode tests");
   TCase *tc = tcase_create("unicode tests");
@@ -45,6 +59,7 @@ int main(void) {
   tcase_add_test(tc, replaces_uppercase_chars_to_lowercase_chars);
   tcase_add_test(tc, replaces_unicode_chars);
   tcase_add_test(tc, ignores_trailing_replacement_chars);
+  tcase_add_test(tc, result_should_be_empty);
 
   srunner_run_all(sr, CK_ENV);
   nf = srunner_ntests_failed(sr);
