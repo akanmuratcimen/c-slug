@@ -1,5 +1,5 @@
 # c-slug
-slugifies a strings.
+Slugifies a strings.
 
 ## overview
 This tiny library converts any string to slug. It basically includes two methods: slug_ascii and slug_unicode. If your string does not have unicode characters, you can use the slug_ascii method to convert any ascii string.
