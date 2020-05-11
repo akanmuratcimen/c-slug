@@ -39,6 +39,3 @@ coverage: clean_coverage | test
 clean: clean_coverage
 	@rm -rf bin $(OUTPUT)
 
-valgrind:
-	valgrind --track-origins=yes --leak-check=full -s ./$(OUTPUT)
-
