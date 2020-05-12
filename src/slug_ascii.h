@@ -8,12 +8,15 @@ extern "C" {
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 char* slug_ascii(const char* string) {
   const char replacement_char = '-';
   
   size_t len = strlen(string), j = 0;
-  char* result = (char*)malloc(len + 1);
+  char* result = malloc(len + 1);
+
+  assert(result);
 
   char c;
 
@@ -44,7 +47,15 @@ char* slug_ascii(const char* string) {
   }
 
   if (len != j) {
-    result = (char*)realloc(result, j + 1);
+    char* rresult = realloc(result, j + 1);
+    
+    if (rresult == NULL) {
+      free(result);
+
+      return NULL;
+    }
+    
+    result = rresult;
   }
 
   result[j] = '\0';

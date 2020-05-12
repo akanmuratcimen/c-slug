@@ -381,9 +381,15 @@ char* slug_unicode(const wchar_t* string) {
     c = string[i];
 
     if (j >= capacity) {
-      result = realloc(result, capacity += 20);
+      char* rresult = realloc(result, capacity += 20);
 
-      assert(result);
+      if (rresult == NULL) {
+        free(result);
+
+        return NULL;
+      }
+
+      result = rresult;
     }
 
     if (iswdigit(c) || iswlower(c)) {
@@ -420,7 +426,15 @@ char* slug_unicode(const wchar_t* string) {
   }
 
   if (capacity + 1 > j) {
-    result = (char*)realloc(result, j + 1);
+    char* rresult = realloc(result, j + 1);
+
+    if (rresult == NULL) {
+      free(result);
+
+      return NULL;
+    }
+
+    result = rresult;
   }
 
   result[j] = '\0';
@@ -461,6 +475,8 @@ static void map_set(map_entry_t** map,
 
 static map_entry_t** map_new(void) {
   map_entry_t** map = malloc(sizeof(map_entry_t) * map_capacity);
+
+  assert(map);
 
   for (size_t i = 0; i < map_capacity; ++i) {
     map[i] = NULL;
