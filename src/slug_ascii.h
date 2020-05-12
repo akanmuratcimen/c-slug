@@ -12,7 +12,7 @@ extern "C" {
 
 char* slug_ascii(const char* string) {
   const char replacement_char = '-';
-  
+
   size_t len = strlen(string), j = 0;
   char* result = malloc(len + 1);
 
@@ -48,13 +48,13 @@ char* slug_ascii(const char* string) {
 
   if (len != j) {
     char* rresult = realloc(result, j + 1);
-    
+
     if (rresult == NULL) {
       free(result);
 
       return NULL;
     }
-    
+ 
     result = rresult;
   }
 

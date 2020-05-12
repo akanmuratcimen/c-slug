@@ -16,7 +16,7 @@ typedef struct unicode_char_map_t {
   char* ascii_char;
 } unicode_char_map_t;
 
-const unicode_char_map_t unicode_char_map[] = { 
+const unicode_char_map_t unicode_char_map[] = {
   { L'À', "a" },
   { L'Á', "a" },
   { L'Â', "a" },
@@ -342,7 +342,7 @@ const unicode_char_map_t unicode_char_map[] = {
   { L'&', "and" },
   { L'|', "or" },
   { L'<', "less" },
-  { L'>', "greater" } 
+  { L'>', "greater" }
 };
 
 size_t map_count() {
@@ -444,7 +444,7 @@ char* slug_unicode(const wchar_t* string) {
   return result;
 }
 
-static void map_set(map_entry_t** map, 
+static void map_set(map_entry_t** map,
     const wchar_t unicode_char, char* ascii_char) {
   const size_t slot = unicode_char % map_capacity;
 
