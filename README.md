@@ -1,4 +1,6 @@
 # c-slug
+![C/C++ CI](https://github.com/akanmuratcimen/c-slug/workflows/C/C++%20CI/badge.svg)
+
 Slugifies a strings.
 
 ## overview
