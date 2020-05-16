@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -W -Wall -Werror -I src -std=c11 -pedantic -lm
-TESTFLAGS = -W -Wall -Werror -I src -std=c11
+CFLAGS = -W -Wall -Werror -I src -std=c11 -pedantic -lm -g
+TESTFLAGS = -W -Wall -Werror -I src -std=c11 -g
 PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
 TEST_LIBS = -lcheck -lpthread -lm -lrt -lsubunit
 COV_LIBS = -lgcov -coverage
@@ -8,7 +8,7 @@ SRCFILES = main.c
 OUTPUT = c-slug 
 
 main:
-	@$(CC) $(SRCFILES) -O3 -o $(OUTPUT) $(CFLAGS)
+	@$(CC) $(SRCFILES) -o $(OUTPUT) $(CFLAGS)
 
 create_bin_dir:
 	@mkdir -p bin
@@ -29,6 +29,10 @@ clean_coverage:
 test: clean_coverage | slug_ascii_tests slug_unicode_tests
 	@./bin/slug_ascii_tests
 	@./bin/slug_unicode_tests
+
+valgrind-test: test
+	@valgrind --leak-check=full ./bin/slug_ascii_tests
+	@valgrind --leak-check=full ./bin/slug_unicode_tests
 
 coverage: clean_coverage | test
 	@gcovr -r . --filter src/ --html --html-details \

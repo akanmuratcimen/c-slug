@@ -42,7 +42,7 @@ char* slug_ascii(const char* string) {
     }
   }
 
-  if (result[j - 1] == replacement_char) {
+  if (j != 0 && result[j - 1] == replacement_char) {
     j--;
   }
 

@@ -421,7 +421,7 @@ char* slug_unicode(const wchar_t* string) {
     }
   }
 
-  if (result[j - 1] == replacement_char) {
+  if (j != 0 && result[j - 1] == replacement_char) {
     j--;
   }
 
